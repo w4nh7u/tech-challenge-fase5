@@ -1,0 +1,22 @@
+{
+    "name": "docker_web_app",
+    "version": "1.0.0",
+    "description": "Gestão de condomínio",
+    "author": "Gestão <gestao@example.com>",
+    "main": "server.js",
+    "scripts": {
+        "start": "node server.js",
+        "dev": "node server.js"
+    },
+    "dependencies": {
+        "body-parse": "^0.1.0",
+        "cors": "^2.8.5",
+        "dotenv": "^16.4.5",
+        "express": "^4.16.1",
+        "express-generator": "^4.14.1",
+        "pg": "^8.11.5",
+        "sequelize": "^6.37.3",
+        "url": "^0.11.3",
+        "util": "^0.12.5"
+    }
+}
