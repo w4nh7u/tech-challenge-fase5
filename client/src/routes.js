@@ -36,28 +36,45 @@ Coded by www.creative-tim.com
 */
 
 // Material Dashboard 2 React layouts
-import Places from "layouts/places";
-import Reservations from "layouts/reservations";
-
+import Atribuicao from "layouts/atribuicao";
+import Membros from "layouts/membros";
+import Tarefas from "layouts/tarefas";
+import Alocacao from "layouts/alocacao";
 // @mui icons
 import Icon from "@mui/material/Icon";
 
 const routes = [
   {
     type: "collapse",
-    name: "Reservas",
-    key: "reservations",
-    icon: <Icon fontSize="small">table_view</Icon>,
-    route: "/reservations",
-    component: <Reservations />,
+    name: "Cadastro de Membros",
+    key: "membros",
+    icon: <Icon fontSize="small">person</Icon>,
+    route: "/membros",
+    component: <Membros />,
   },
   {
     type: "collapse",
-    name: "Locais",
-    key: "places",
-    icon: <Icon fontSize="small">room</Icon>,
-    route: "/places",
-    component: <Places />,
+    name: "Cadastro de Tarefas",
+    key: "tarefas",
+    icon: <Icon fontSize="small">description</Icon>,
+    route: "/tarefas",
+    component: <Tarefas />,
+  },
+  {
+    type: "collapse",
+    name: "Atribuição de Tarefas",
+    key: "atribuicao",
+    icon: <Icon fontSize="small">task</Icon>,
+    route: "/atribuicao",
+    component: <Atribuicao />,
+  },
+  {
+    type: "collapse",
+    name: "Tempo de Alocação",
+    key: "alocacao",
+    icon: <Icon fontSize="small">schedule</Icon>,
+    route: "/alocacao",
+    component: <Alocacao />,
   }
 ];
 

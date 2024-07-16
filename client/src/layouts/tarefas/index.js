@@ -30,9 +30,13 @@ import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import Icon from "@mui/material/Icon";
 import Box from '@mui/material/Box';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
 import IconButton from "@mui/material/IconButton";
+import FormControl from "@mui/material/FormControl";
 import { red } from '@mui/material/colors';
+import { unstable_useNumberInput as useNumberInput } from '@mui/base';
 
 import Accordion from '@mui/material/Accordion';
 import AccordionDetails from '@mui/material/AccordionDetails';
@@ -49,13 +53,21 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 
+import ApiReservations from "api/reservations";
 import ApiPlaces from "api/places";
+
+let places = []
+async function getPlaces() {
+  places = await ApiPlaces.get()
+  places = places.data
+}
+getPlaces()
 
 let rows = []
 async function getData() {
-  const places = await ApiPlaces.get()
+  const reservations = await ApiReservations.get()
 
-  rows = places.data
+  rows = reservations.data
 }
 getData()
 
@@ -83,38 +95,9 @@ function Row(props) {
         <TableCell component="th" scope="row">
           {row.id}
         </TableCell>
-        <TableCell align="right">{row.name}</TableCell>
-        <TableCell align="right">{row.capacity}</TableCell>
-        <TableCell align="right">
-        <IconButton 
-            variant="gradient" 
-            color="success"
-            onClick={() => {
-              setOpen(!open)
-            }}
-          >
-            <Icon round>edit</Icon>
-          </IconButton>
-          <IconButton 
-            variant="gradient" 
-            sx={{ color: red[600] }}
-            onClick={() => {
-              ApiPlaces
-                .delete(row.id)
-                .then(response => {
-                  if (response.hasOwnProperty('data')) {
-                    alert('Local foi apagado!')
-                    window.location.reload()
-                  } 
-                  else {
-                    alert('Ops! Tivemos algum problema, tente novamente!')
-                  }
-                });
-            }}
-          >
-            <Icon round>delete</Icon>
-          </IconButton>
-        </TableCell>
+        <TableCell align="right">{row.place}</TableCell>
+        <TableCell align="right">{row.date}</TableCell>
+        <TableCell align="right">{row.start}</TableCell>
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
@@ -130,51 +113,57 @@ function Row(props) {
                   >
                     <TableCell component="th" scope="row">
                       <TextField 
-                        label="Nome" 
+                        label="Descrição da Tarefa" 
                         variant="standard" 
                         defaultValue={row.name}
+                        type="text"
                         required
                         onChange={(e) => {
-                          row.name = e.target.value;
+                          row.task = e.target.value;
                         }}
                       />
                     </TableCell>
                     <TableCell>
                       <TextField 
-                        label="Capacidade" 
+                        label="Prazo" 
                         variant="standard"
-                        type="number"
-                        defaultValue={row.capacity}
+                        type="date"
+                        defaultValue={row.email}
                         required
                         onChange={(e) => {
-                          row.capacity = parseInt(e.target.value);
+                          row.deadline = e.target.value;
                         }}
                       />
                     </TableCell>
                     <TableCell>
-                      <MDButton 
-                        variant="gradient" 
-                        color="success"
-                        onClick={() => {
-                          row.name = row.name;
-                          row.capacity = row.capacity;
-                          ApiPlaces.update(row.id, {name: row.name, capacity: row.capacity})
-                            .then(response => {
-                              if (response.hasOwnProperty('data')) {
-                                alert('Local atualizado com sucesso!')
-                                setRefreshData(!refreshData)
-                              } 
-                              else {
-                                alert('Ops! Tivemos algum problema, tente novamente!')
-                              }
-                            });
-                          setRefreshData(!refreshData)
+                      <MDInput
+                        select
+                        variant="standard"
+                        label="Prioridade"
+                        defaultValue={row.priority}
+                        required
+                        onChange={(e) => {
+                          row.priority = e.target.value;
                         }}
                       >
-                        <Icon sx={{ fontWeight: "bold" }}>send</Icon>
-                        &nbsp;&nbsp;salvar
-                      </MDButton>
+                        <MenuItem value="1">Alta</MenuItem>
+                        <MenuItem value="2">Média</MenuItem>
+                        <MenuItem value="3">Baixa</MenuItem>
+                      </MDInput>
                     </TableCell>
+                    <TableCell>
+                      <TextField 
+                        label="Tempo Estimado para Conclusão (em horas)" 
+                        variant="standard"
+                        type="number"
+                        defaultValue={row.etc}
+                        required
+                        onChange={(e) => {
+                          row.etc = e.target.value;
+                        }}
+                      />
+                    </TableCell>
+                    
                   </TableRow>
                 </TableBody>
               </Table>
@@ -188,7 +177,8 @@ function Row(props) {
 
 let insert = {
   name: '',
-  capacity: 0
+  email: '',
+  function: '',
 }
 
 function Tables() {
@@ -210,7 +200,7 @@ function Tables() {
                 coloredShadow="info"
               >
                 <MDTypography variant="h6" color="white">
-                  Locais
+                Cadastro de Tarefas
                 </MDTypography>
               </MDBox>
 
@@ -222,7 +212,7 @@ function Tables() {
                         color="black"
                       >
                         <Icon sx={{ fontWeight: "bold" }}>add</Icon>
-                        &nbsp;novo local
+                        &nbsp;Nova Tarefa
                       </MDButton>
                     </Box>
                   </AccordionSummary>
@@ -235,23 +225,47 @@ function Tables() {
                       noValidate
                       autoComplete="off"
                     >
-                      <MDInput 
-                        type="text" 
-                        label="Nome" 
-                        variant="standard" 
-                        pr={2}
-                        onChange={(e) => {
-                          insert.name = e.target.value;
-                        }}
-                      />
-                      <MDInput 
-                        type="number" 
-                        label="Capacidade" 
+                      <MDInput
+                        label="Descrição da Tarefa"
                         variant="standard"
                         onChange={(e) => {
-                          insert.capacity = parseInt(e.target.value);
+                          insert.task = e.target.value;
                         }}
                       />
+
+                      <MDInput
+                        type="date" 
+                        label="Prazo"
+                        variant="standard"
+                        min="1"
+                        onChange={(e) => {
+                          insert.deadline = e.target.value;
+                        }}
+                      />
+
+                      <MDInput
+                        select
+                        variant="standard"
+                        label="Prioridade"
+                        onChange={(e) => {
+                          insert.priority = e.target.value;
+                        }}
+                      >
+                        <MenuItem value="1">Alta</MenuItem>
+                        <MenuItem value="2">Média</MenuItem>
+                        <MenuItem value="3">Baixa</MenuItem>
+                      </MDInput>
+
+                      <MDInput
+                        label="Tempo Estimado para Conclusão (em horas)"
+                        type="number"
+                        min="1"
+                        variant="standard"
+                        onChange={(e) => {
+                          insert.etc = e.target.value;
+                        }}
+                      />
+
                       <Box
                         mt={1}
                         ml={1}
@@ -277,7 +291,8 @@ function Tables() {
                           <Icon sx={{ fontWeight: "bold" }}>send</Icon>
                           &nbsp;&nbsp;salvar
                         </MDButton>
-                        </Box>
+                      </Box>
+
                     </Box>
                   </AccordionDetails>
                 </Accordion>
@@ -292,9 +307,10 @@ function Tables() {
                       <TableRow>
                         <TableCell />
                         <TableCell>ID</TableCell>
-                        <TableCell align="right">Nome</TableCell>
-                        <TableCell align="right">Capacidade</TableCell>
-                        <TableCell align="right">Ações</TableCell>
+                        <TableCell align="right">Descrição da Tarefa</TableCell>
+                        <TableCell align="right">Prazo</TableCell>
+                        <TableCell align="right">Prioridade</TableCell>
+                        <TableCell align="right">Tempo Estimado para Conclusão</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>

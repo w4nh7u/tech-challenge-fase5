@@ -12,7 +12,6 @@ Coded by www.creative-tim.com
 
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
-import './reservation.css';
 import React, { Component, useState } from 'react';
 import Collapse from '@mui/material/Collapse';
 import Table from '@mui/material/Table';
@@ -95,40 +94,9 @@ function Row(props) {
         <TableCell component="th" scope="row">
           {row.id}
         </TableCell>
-        <TableCell align="right">{row.place}</TableCell>
-        <TableCell align="right">{row.date}</TableCell>
-        <TableCell align="right">{row.start}</TableCell>
-        <TableCell align="right">{row.end}</TableCell>
-        <TableCell align="right">
-        <IconButton 
-            variant="gradient" 
-            color="success"
-            onClick={() => {
-              setOpen(!open)
-            }}
-          >
-            <Icon round>edit</Icon>
-          </IconButton>
-          <IconButton 
-            variant="gradient" 
-            sx={{ color: red[600] }}
-            onClick={() => {
-              ApiReservations
-                .delete(row.id)
-                .then(response => {
-                  if (response.hasOwnProperty('data')) {
-                    alert('Reserva foi desfeita!')
-                    window.location.reload()
-                  } 
-                  else {
-                    alert('Ops! Tivemos algum problema, tente novamente!')
-                  }
-                });
-            }}
-          >
-            <Icon round>delete</Icon>
-          </IconButton>
-        </TableCell>
+        <TableCell align="right">{row.name}</TableCell>
+        <TableCell align="right">{row.email}</TableCell>
+        <TableCell align="right">{row.function}</TableCell>
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
@@ -162,10 +130,10 @@ function Row(props) {
                     </TableCell>
                     <TableCell component="th" scope="row">
                       <TextField 
-                        label="Dia" 
+                        label="Nome" 
                         variant="standard" 
-                        defaultValue={row.date}
-                        type="date"
+                        defaultValue={row.name}
+                        type="text"
                         required
                         onChange={(e) => {
                           row.name = e.target.value;
@@ -174,90 +142,27 @@ function Row(props) {
                     </TableCell>
                     <TableCell>
                       <TextField 
-                        label="Início" 
+                        label="Email" 
                         variant="standard"
-                        type="time"
-                        defaultValue={row.start}
+                        type="text"
+                        defaultValue={row.email}
                         required
                         onChange={(e) => {
-                          row.start = e.target.value;
+                          row.email = e.target.value;
                         }}
                       />
                     </TableCell>
                     <TableCell>
                       <TextField 
-                        label="Início" 
+                        label="Função" 
                         variant="standard"
-                        type="time"
-                        defaultValue={row.end}
+                        type="text"
+                        defaultValue={row.function}
                         required
                         onChange={(e) => {
-                          row.end = e.target.value;
+                          row.function = e.target.value;
                         }}
                       />
-                    </TableCell>
-                    <TableCell>
-                      <MDButton 
-                        variant="gradient" 
-                        color="success"
-                        onClick={() => {
-                          let hora1 = row.start.split(":");
-                          let hora2 = row.end.split(":");
-
-                          let d = new Date(row.date);
-                          const start = new Date(d.getFullYear(), d.getMonth(), d.getDate(), hora1[0], hora1[1]);
-                          const end = new Date(d.getFullYear(), d.getMonth(), d.getDate(), hora2[0], hora2[1]);
-
-                          const reservas = rows.filter(r => {
-                            let r1 = r.start.split(":");
-                            let r2 = r.end.split(":");
-                            let d = new Date(r.date);
-                            const rStart = new Date(d.getFullYear(), d.getMonth(), d.getDate(), r1[0], r1[1]);
-                            const rEnd = new Date(d.getFullYear(), d.getMonth(), d.getDate(), r2[0], r2[1]);
-
-                            if (
-                              r.place == row.place &&
-                              rStart.getTime() <= end.getTime() && 
-                              rEnd.getTime() >= start.getTime()
-                            ) {
-                              alert('Já existe reserva para este horário!')
-                              return
-                            }
-                            return rows
-                          })
-
-                          if (start > end) {
-                            alert('O início deve ser menor que o fim');
-                            return
-                          }
-
-                          const diff = (end.getTime() - start.getTime()) / 1000 / 60 / 60;
-                          if (diff < 1) {
-                            alert('O mínimo de tempo de reserva deve ser de 1 hora');
-                            return
-                          }
-
-                          if (diff > 8) {
-                            alert('O máximo de tempo de reserva deve ser de 8 horas');
-                            return
-                          }
-
-                          ApiReservations.update(row.id, {place: row.place, date: row.date, start: row.start, end: row.end})
-                            .then(response => {
-                              if (response.hasOwnProperty('data')) {
-                                alert('Reserva atualizada com sucesso!')
-                                setRefreshData(!refreshData)
-                              } 
-                              else {
-                                alert('Ops! Tivemos algum problema, tente novamente!')
-                              }
-                            });
-                          setRefreshData(!refreshData)
-                        }}
-                      >
-                        <Icon sx={{ fontWeight: "bold" }}>send</Icon>
-                        &nbsp;&nbsp;salvar
-                      </MDButton>
                     </TableCell>
                   </TableRow>
                 </TableBody>
@@ -271,10 +176,9 @@ function Row(props) {
 }
 
 let insert = {
-  place: '',
-  date: '',
-  start: '',
-  end: '',
+  name: '',
+  email: '',
+  function: '',
 }
 
 function Tables() {
@@ -296,7 +200,7 @@ function Tables() {
                 coloredShadow="info"
               >
                 <MDTypography variant="h6" color="white">
-                  Reservas
+                Cadastro de Membros
                 </MDTypography>
               </MDBox>
 
@@ -308,7 +212,7 @@ function Tables() {
                         color="black"
                       >
                         <Icon sx={{ fontWeight: "bold" }}>add</Icon>
-                        &nbsp;nova reserva
+                        &nbsp;Novo Membro
                       </MDButton>
                     </Box>
                   </AccordionSummary>
@@ -322,40 +226,34 @@ function Tables() {
                       autoComplete="off"
                     >
                       <MDInput
-                        label="Locais"
+                        label="Nome"
                         variant="standard"
                         onChange={(e) => {
-                          insert.place = e.target.value;
+                          insert.name = e.target.value;
                         }}
                       />
 
-                      <MDInput 
-                        type="date" 
-                        label="Data" 
-                        variant="standard" 
-                        pr={2}
-                        onChange={(e) => {
-                          insert.date = e.target.value;
-                        }}
-                      />
-                      
-                      <MDInput 
-                        type="time" 
-                        label="Início" 
+                      <MDInput
+                        label="Email"
                         variant="standard"
                         onChange={(e) => {
-                          insert.start = e.target.value;
+                          insert.email = e.target.value;
                         }}
                       />
 
-                      <MDInput 
-                        type="time" 
-                        label="Fim" 
+                      <MDInput
+                        select
+                        label="Função"
                         variant="standard"
                         onChange={(e) => {
-                          insert.end = e.target.value;
+                          insert.function = e.target.value;
                         }}
-                      />
+                      >
+                        <MenuItem value="jr">Desenvolvedor Jr</MenuItem>
+                        <MenuItem value="pl">Desenvolvedor Pleno</MenuItem>
+                        <MenuItem value="sr">Desenvolvedor Sr</MenuItem>
+                      </MDInput>
+
                       <Box
                         mt={1}
                         ml={1}
@@ -364,51 +262,10 @@ function Tables() {
                           variant="gradient" 
                           color="success"
                           onClick={() => {
-                            let hora1 = insert.start.split(":");
-                            let hora2 = insert.end.split(":");
-
-                            let d = new Date(insert.date);
-                            const start = new Date(d.getFullYear(), d.getMonth(), d.getDate(), hora1[0], hora1[1]);
-                            const end = new Date(d.getFullYear(), d.getMonth(), d.getDate(), hora2[0], hora2[1]);
-
-                            const reservas = rows.filter(r => {
-                              let r1 = r.start.split(":");
-                              let r2 = r.end.split(":");
-                              let d = new Date(r.date);
-                              const rStart = new Date(d.getFullYear(), d.getMonth(), d.getDate(), r1[0], r1[1]);
-                              const rEnd = new Date(d.getFullYear(), d.getMonth(), d.getDate(), r2[0], r2[1]);
-
-                              if (
-                                r.place == insert.place &&
-                                rStart.getTime() <= end.getTime() && 
-                                rEnd.getTime() >= start.getTime()
-                              ) {
-                                alert('Já existe reserva para este horário!')
-                                return
-                              }
-                              return rows
-                            })
-
-                            if (start > end) {
-                              alert('O início deve ser menor que o fim');
-                              return
-                            }
-
-                            const diff = (end.getTime() - start.getTime()) / 1000 / 60 / 60;
-                            if (diff < 1) {
-                              alert('O mínimo de tempo de reserva deve ser de 1 hora');
-                              return
-                            }
-
-                            if (diff > 8) {
-                              alert('O máximo de tempo de reserva deve ser de 8 horas');
-                              return
-                            }
-
-                            ApiReservations.insert(insert)
+                            ApiPlaces.insert(insert)
                               .then(response => {
                                 if (response.hasOwnProperty('data')) {
-                                  alert('Nova reserva cadastrada com sucesso!')
+                                  alert('Novo local cadastrado com sucesso!')
                                   getData()
                                 } 
                                 else {
@@ -422,7 +279,8 @@ function Tables() {
                           <Icon sx={{ fontWeight: "bold" }}>send</Icon>
                           &nbsp;&nbsp;salvar
                         </MDButton>
-                        </Box>
+                      </Box>
+
                     </Box>
                   </AccordionDetails>
                 </Accordion>
@@ -437,10 +295,9 @@ function Tables() {
                       <TableRow>
                         <TableCell />
                         <TableCell>ID</TableCell>
-                        <TableCell align="right">Local</TableCell>
-                        <TableCell align="right">Dia</TableCell>
-                        <TableCell align="right">Início</TableCell>
-                        <TableCell align="right">Fim</TableCell>
+                        <TableCell align="right">Nome</TableCell>
+                        <TableCell align="right">Email</TableCell>
+                        <TableCell align="right">Função</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
