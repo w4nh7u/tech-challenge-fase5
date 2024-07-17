@@ -12,6 +12,7 @@ Coded by www.creative-tim.com
 
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
+import './atribuicao.css';
 import React, { Component, useState } from 'react';
 import Collapse from '@mui/material/Collapse';
 import Table from '@mui/material/Table';
@@ -51,9 +52,6 @@ import MDInput from "components/MDInput";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
-
-import ApiReservations from "api/reservations";
-import ApiPlaces from "api/places";
 
 import ApiTasks from "api/tasks";
 import ApiMembers from "api/members";
@@ -107,11 +105,8 @@ function Row(props) {
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </TableCell>
-        <TableCell component="th" scope="row">
-          {row.id}
-        </TableCell>
-        <TableCell align="right">{row.member}</TableCell>
         <TableCell align="right">{row.task}</TableCell>
+        <TableCell align="right">{row.member}</TableCell>
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
@@ -120,35 +115,26 @@ function Row(props) {
               <Typography variant="h6" gutterBottom component="div">
                 Alterar Dados
               </Typography>
-              <Table size="small" aria-label="purchases">
+              <Table size="large" aria-label="purchases">
                 <TableBody>
                   <TableRow>
+                    <TableCell align="left">{row.task}</TableCell>
                     <TableCell component="th" scope="row">
-                      {row.id}
-                    </TableCell>
-                    <TableCell component="th" scope="row">
-                      <TextField 
-                        label="Descrição da Tarefa" 
-                        variant="standard" 
-                        defaultValue={row.member}
-                        type="text"
-                        required
-                        onChange={(e) => {
-                          row.member = e.target.value;
-                        }}
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <TextField 
-                        label="Prazo" 
+                      <MDInput
+                        select
                         variant="standard"
-                        type="date"
-                        defaultValue={row.task}
+                        label="Membro"
                         required
                         onChange={(e) => {
-                          row.task = e.target.value;
+                          insert.member = e.target.value;
                         }}
-                      />
+                      >
+                        {members.map((member) => (
+                          <MenuItem key={member.id} value={member.id}>
+                            {member.name}
+                          </MenuItem>
+                        ))}
+                      </MDInput>
                     </TableCell>
                     <TableCell>
                       <MDButton 
@@ -156,11 +142,10 @@ function Row(props) {
                         color="success"
                         onClick={() => {
                           row.member = row.member;
-                          row.task = row.task;
-                          ApiTasks.update(row.id, {description: row.description, deadline: row.deadline, priority: row.priority, etc: row.etc})
+                          ApiMembersTask.update(row.id, {member: row.member})
                             .then(response => {
                               if (response.hasOwnProperty('data')) {
-                                alert('Tarefa atualizado com sucesso!')
+                                alert('Atribuição atualizada com sucesso!')
                                 setRefreshData(!refreshData)
                               } 
                               else {
@@ -196,7 +181,7 @@ function Tables() {
     <DashboardLayout>
       <DashboardNavbar />
       <MDBox pt={6} pb={3}>
-        <Grid container spacing={6}>
+        <Grid container spacing={12} >
           <Grid item xs={12}>
             <Card>
               <MDBox
@@ -214,7 +199,7 @@ function Tables() {
                 </MDTypography>
               </MDBox>
 
-              <Box mt={2}>
+              <Box mt={2} >
                 <Accordion>
                   <AccordionSummary id="panel-header" aria-controls="panel-content" style={{backgroundColor: '#000'}}>
                     <Box>
@@ -229,10 +214,6 @@ function Tables() {
                   <AccordionDetails>
                     <Box
                       component="form"
-                      sx={{
-                        '& .MuiTextField-root': { m: 1, width: '25ch' },
-                      }}
-                      noValidate
                       autoComplete="off"
                     >
                       <MDInput
@@ -276,10 +257,10 @@ function Tables() {
                           variant="gradient" 
                           color="success"
                           onClick={() => {
-                            ApiPlaces.insert(insert)
+                            ApiMembersTask.insert(insert)
                               .then(response => {
                                 if (response.hasOwnProperty('data')) {
-                                  alert('Novo local cadastrado com sucesso!')
+                                  alert('Nova atribuição cadastrado com sucesso!')
                                   getData()
                                 } 
                                 else {
@@ -307,8 +288,7 @@ function Tables() {
                   <Table aria-label="collapsible table">
                     <TableHead>
                       <TableRow>
-                        <TableCell />
-                        <TableCell>ID</TableCell>
+                        <TableCell align="right"></TableCell>
                         <TableCell align="right">Tarefa</TableCell>
                         <TableCell align="right">Membro Responsavel</TableCell>
                       </TableRow>
