@@ -156,6 +156,7 @@ function Tables() {
                         select
                         variant="standard"
                         label="Tarefa"
+                        required
                         onChange={(e) => {
                           insert.task = e.target.value;
                         }}
@@ -169,6 +170,7 @@ function Tables() {
                         select
                         variant="standard"
                         label="Membro"
+                        required
                         onChange={(e) => {
                           insert.name = e.target.value;
                         }}
