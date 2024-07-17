@@ -57,11 +57,12 @@ import ApiPlaces from "api/places";
 
 import ApiTasks from "api/tasks";
 import ApiMembers from "api/members";
+import ApiMembersTask from "api/membersTask";
+
 let tasks = []
 async function getTasks() {
   const response = await ApiTasks.get()
   tasks = response.data
-  console.log('tasks', tasks)
 }
 await getTasks()
 
@@ -69,26 +70,23 @@ let members = []
 async function getMembers() {
   const response = await ApiMembers.get()
   members = response.data
-  console.log('members', members)
 }
 await getMembers()
 
-
-
-let places = []
-async function getPlaces() {
-  places = await ApiPlaces.get()
-  places = places.data
-}
-getPlaces()
-
+let memberTask = []
 let rows = []
-async function getData() {
-  const reservations = await ApiReservations.get()
-
-  rows = reservations.data
+let index = 0
+async function getMemberTask() {
+  memberTask = await ApiMembersTask.get()
+  memberTask.data.forEach(item => {
+    item.tasks.forEach(task => {
+      rows.push({id: index, member: item.member.name, task: task.description})
+    });
+    index++
+  });
+  console.log('mrows', rows)
 }
-getData()
+await getMemberTask()
 
 function Row(props) {
   const { row } = props;
@@ -114,16 +112,85 @@ function Row(props) {
         <TableCell component="th" scope="row">
           {row.id}
         </TableCell>
+        <TableCell align="right">{row.member}</TableCell>
         <TableCell align="right">{row.task}</TableCell>
-        <TableCell align="right">{row.name}</TableCell>
+      </TableRow>
+      <TableRow>
+        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+          <Collapse in={open} timeout="auto" unmountOnExit>
+            <Box sx={{ margin: 1 }}>
+              <Typography variant="h6" gutterBottom component="div">
+                Alterar Dados
+              </Typography>
+              <Table size="small" aria-label="purchases">
+                <TableBody>
+                  <TableRow>
+                    <TableCell component="th" scope="row">
+                      {row.id}
+                    </TableCell>
+                    <TableCell component="th" scope="row">
+                      <TextField 
+                        label="Descrição da Tarefa" 
+                        variant="standard" 
+                        defaultValue={row.member}
+                        type="text"
+                        required
+                        onChange={(e) => {
+                          row.member = e.target.value;
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <TextField 
+                        label="Prazo" 
+                        variant="standard"
+                        type="date"
+                        defaultValue={row.task}
+                        required
+                        onChange={(e) => {
+                          row.task = e.target.value;
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <MDButton 
+                        variant="gradient" 
+                        color="success"
+                        onClick={() => {
+                          row.member = row.member;
+                          row.task = row.task;
+                          ApiTasks.update(row.id, {description: row.description, deadline: row.deadline, priority: row.priority, etc: row.etc})
+                            .then(response => {
+                              if (response.hasOwnProperty('data')) {
+                                alert('Tarefa atualizado com sucesso!')
+                                setRefreshData(!refreshData)
+                              } 
+                              else {
+                                alert('Ops! Tivemos algum problema, tente novamente!')
+                              }
+                            });
+                          setRefreshData(!refreshData)
+                        }}
+                      >
+                        <Icon sx={{ fontWeight: "bold" }}>send</Icon>
+                        &nbsp;&nbsp;salvar
+                      </MDButton>
+                    </TableCell>
+                    
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </Box>
+          </Collapse>
+        </TableCell>
       </TableRow>
     </React.Fragment>
   );
 }
 
 let insert = {
+  member: '',
   task: '',
-  name: '',
 }
 
 function Tables() {
@@ -249,8 +316,8 @@ function Tables() {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {rows.map((row) => (
-                        <Row key={row.id} row={row} />
+                      {rows.map((row,index) => (
+                        <Row key={row[index].id} row={row} />
                       ))}
                     </TableBody>
                   </Table>
