@@ -52,23 +52,16 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 
-import ApiReservations from "api/reservations";
-import ApiPlaces from "api/places";
+import ApiMembers from "api/members";
 
-let places = []
-async function getPlaces() {
-  places = await ApiPlaces.get()
-  places = places.data
-}
-getPlaces()
-
+let members = []
 let rows = []
-async function getData() {
-  const reservations = await ApiReservations.get()
-
-  rows = reservations.data
+async function getMembers() {
+  const response = await ApiMembers.get()
+  members = response.data
+  rows = response.data
 }
-getData()
+await getMembers()
 
 function Row(props) {
   const { row } = props;
@@ -110,24 +103,6 @@ function Row(props) {
                   <TableRow 
                     key={row.id}
                   >
-                    <TableCell>
-                      <MDInput
-                        size="large"
-                        select
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select"
-                        //value={gender}
-                        label="Locais"
-                        InputProps={{
-                          classes: { root: "select-input-styles" },
-                        }}
-                        fullWidth
-                      >
-                        {places.map((place) => (
-                          <MenuItem value={place.id}>{place.name}</MenuItem>
-                        ))}
-                      </MDInput>
-                    </TableCell>
                     <TableCell component="th" scope="row">
                       <TextField 
                         label="Nome" 
@@ -153,16 +128,20 @@ function Row(props) {
                       />
                     </TableCell>
                     <TableCell>
-                      <TextField 
-                        label="Função" 
+                      <MDInput
+                        select
+                        label="Função"
                         variant="standard"
-                        type="text"
-                        defaultValue={row.function}
                         required
+                        defaultValue={row.function}
                         onChange={(e) => {
                           row.function = e.target.value;
                         }}
-                      />
+                      >
+                        <MenuItem value="jr">Desenvolvedor Jr</MenuItem>
+                        <MenuItem value="pl">Desenvolvedor Pleno</MenuItem>
+                        <MenuItem value="sr">Desenvolvedor Sr</MenuItem>
+                      </MDInput>
                     </TableCell>
                   </TableRow>
                 </TableBody>
@@ -262,10 +241,10 @@ function Tables() {
                           variant="gradient" 
                           color="success"
                           onClick={() => {
-                            ApiPlaces.insert(insert)
+                            ApiMembers.insert(insert)
                               .then(response => {
                                 if (response.hasOwnProperty('data')) {
-                                  alert('Novo local cadastrado com sucesso!')
+                                  alert('Novo membro cadastrado com sucesso!')
                                   getData()
                                 } 
                                 else {

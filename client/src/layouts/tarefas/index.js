@@ -53,23 +53,16 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 
-import ApiReservations from "api/reservations";
-import ApiPlaces from "api/places";
+import ApiTasks from "api/tasks";
 
-let places = []
-async function getPlaces() {
-  places = await ApiPlaces.get()
-  places = places.data
-}
-getPlaces()
-
+let tasks = []
 let rows = []
-async function getData() {
-  const reservations = await ApiReservations.get()
-
-  rows = reservations.data
+async function getTasks() {
+  const response = await ApiTasks.get()
+  tasks = response.data
+  rows = response.data
 }
-getData()
+await getTasks()
 
 function Row(props) {
   const { row } = props;
@@ -95,9 +88,9 @@ function Row(props) {
         <TableCell component="th" scope="row">
           {row.id}
         </TableCell>
-        <TableCell align="right">{row.place}</TableCell>
-        <TableCell align="right">{row.date}</TableCell>
-        <TableCell align="right">{row.start}</TableCell>
+        <TableCell align="right">{row.id}</TableCell>
+        <TableCell align="right">{row.deadline}</TableCell>
+        <TableCell align="right">{row.priority}</TableCell>
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>

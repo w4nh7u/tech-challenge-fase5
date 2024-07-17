@@ -1,22 +1,35 @@
 {
-    "name": "docker_web_app",
-    "version": "1.0.0",
-    "description": "Gestão de condomínio",
-    "author": "Gestão <gestao@example.com>",
-    "main": "server.js",
-    "scripts": {
-        "start": "node server.js",
-        "dev": "node server.js"
-    },
-    "dependencies": {
-        "body-parse": "^0.1.0",
-        "cors": "^2.8.5",
-        "dotenv": "^16.4.5",
-        "express": "^4.16.1",
-        "express-generator": "^4.14.1",
-        "pg": "^8.11.5",
-        "sequelize": "^6.37.3",
-        "url": "^0.11.3",
-        "util": "^0.12.5"
-    }
+  "name": "node",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "nodemon index.js",
+    "dev": "nodemon index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/jest": "^29.5.12",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "firebase": "10.12.3",
+    "firebase-admin": "^12.2.0",
+    "firebase-tools": "^13.13.3",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.2.2",
+    "typescript": "^5.5.3",
+    "webpack": "^5.93.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.24.8",
+    "@babel/core": "^7.24.8",
+    "@babel/node": "^7.24.8",
+    "@babel/preset-env": "^7.24.8",
+    "firebase-functions-test": "^3.3.0",
+    "nodemon": "^3.1.4"
+  }
 }
