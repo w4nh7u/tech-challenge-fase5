@@ -80,11 +80,9 @@ async function getMemberTask() {
   memberTask = await ApiMembersTask.get()
   memberTask.data.forEach(item => {
     item.tasks.forEach(task => {
-      rows.push({id: index, member: item.member.name, task: task.description})
+      rows.push({id: index++, member: item.member.name, task: task.description})
     });
-    index++
   });
-  console.log('mrows', rows)
 }
 await getMemberTask()
 
@@ -316,8 +314,8 @@ function Tables() {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {rows.map((row,index) => (
-                        <Row key={row[index].id} row={row} />
+                      {rows.map((row) => (
+                        <Row key={row.id} row={row} />
                       ))}
                     </TableBody>
                   </Table>

@@ -51,24 +51,48 @@ import MDInput from "components/MDInput";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
+import ApiMembersTask from "api/membersTask";
 
-import ApiReservations from "api/reservations";
-import ApiPlaces from "api/places";
 
-let places = []
-async function getPlaces() {
-  places = await ApiPlaces.get()
-  places = places.data
-}
-getPlaces()
-
+let memberTask = []
 let rows = []
-async function getData() {
-  const reservations = await ApiReservations.get()
+let index = 0
+async function getMemberTask() {
+  memberTask = await ApiMembersTask.get()
 
-  rows = reservations.data
+  memberTask.data.forEach(item => {
+    const memberName = item.member.name;
+    let totalEtc = 0;
+
+    // Calcular o total de 'etc' para as tarefas do membro
+    item.tasks.forEach(task => {
+      totalEtc += Number(task.etc);
+    });
+
+    // Adicionar ao resultado no formato desejado
+    rows.push({id: index++, member: memberName, etc: totalEtc });
+  });
 }
-getData()
+await getMemberTask()
+function Row(props) {
+  const { row } = props;
+  const [open, setOpen] = useState(false)
+  const [refreshData, setRefreshData] = useState(false)
+
+  React.useEffect(()=>{
+    row
+  },[refreshData])
+
+  return (
+    <React.Fragment>
+      <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
+        <TableCell align="right">{row.member}</TableCell>
+        <TableCell align="right">{row.etc}</TableCell>
+      </TableRow>
+
+    </React.Fragment>
+  );
+}
 
 function Tables() {
   return (
@@ -85,10 +109,8 @@ function Tables() {
                   <Table aria-label="collapsible table">
                     <TableHead>
                       <TableRow>
-                        <TableCell />
-                        <TableCell>ID</TableCell>
                         <TableCell align="right">Membro</TableCell>
-                        <TableCell align="right">Alocação de Tempo</TableCell>
+                        <TableCell align="right">Alocação de Tempo (em horas)</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
