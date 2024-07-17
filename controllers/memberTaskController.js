@@ -61,7 +61,6 @@ export const getGroupByMember = async (req, res, next) => {
     res.status(400).send(error.message);
   }
 };
-
 export const createMemberTask = async (req, res, next) => {
   try {
     const data = req.body;
@@ -79,16 +78,6 @@ export const updateMemberTask = async (req, res, next) => {
     const member = doc(db, 'members_tasks', id);
     await updateDoc(member, data);
     res.status(200).send('members_tasks updated successfully');
-  } catch (error) {
-    res.status(400).send(error.message);
-  }
-};
- 
-export const deleteMemberTask = async (req, res, next) => {
-  try {
-    const id = req.params.id;
-    await deleteDoc(doc(db, 'members_tasks', id));
-    res.status(200).send('members_tasks deleted successfully');
   } catch (error) {
     res.status(400).send(error.message);
   }

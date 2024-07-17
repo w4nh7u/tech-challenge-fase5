@@ -105,8 +105,8 @@ function Row(props) {
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </TableCell>
-        <TableCell align="right">{row.task}</TableCell>
-        <TableCell align="right">{row.member}</TableCell>
+        <TableCell align="left">{row.task}</TableCell>
+        <TableCell align="left">{row.member}</TableCell>
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
@@ -118,8 +118,9 @@ function Row(props) {
               <Table size="large" aria-label="purchases">
                 <TableBody>
                   <TableRow>
+                    <TableCell align="left"></TableCell>
                     <TableCell align="left">{row.task}</TableCell>
-                    <TableCell component="th" scope="row">
+                    <TableCell component="th" scope="row" sx={{'& .MuiTextField-root': { m: 1, width: '25ch' },}}>
                       <MDInput
                         select
                         variant="standard"
@@ -181,7 +182,7 @@ function Tables() {
     <DashboardLayout>
       <DashboardNavbar />
       <MDBox pt={6} pb={3}>
-        <Grid container spacing={12} >
+        <Grid container spacing={6}>
           <Grid item xs={12}>
             <Card>
               <MDBox
@@ -199,7 +200,14 @@ function Tables() {
                 </MDTypography>
               </MDBox>
 
-              <Box mt={2} >
+              <Box
+                component="form"
+                sx={{
+                  '& .MuiTextField-root': { m: 1, width: '25ch' },
+                }}
+                noValidate
+                autoComplete="off"
+              >
                 <Accordion>
                   <AccordionSummary id="panel-header" aria-controls="panel-content" style={{backgroundColor: '#000'}}>
                     <Box>
@@ -288,9 +296,9 @@ function Tables() {
                   <Table aria-label="collapsible table">
                     <TableHead>
                       <TableRow>
-                        <TableCell align="right"></TableCell>
-                        <TableCell align="right">Tarefa</TableCell>
-                        <TableCell align="right">Membro Responsavel</TableCell>
+                        <TableCell align="left"></TableCell>
+                        <TableCell align="left">Tarefa</TableCell>
+                        <TableCell align="left">Membro Responsavel</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
