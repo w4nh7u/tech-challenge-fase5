@@ -1,4 +1,4 @@
-FROM node:12
+FROM node:17.3.0
 
 WORKDIR /app
 
@@ -13,4 +13,4 @@ COPY . .
 EXPOSE 3000
 
 # CMD npm start
-CMD [ "node", "server.js" ]
+CMD [ "nodemon", "index.js" ]
