@@ -1,9 +1,5 @@
 import firebase from '../firebase.js';
-// import Member from '../models/memberTaskModel.js';
-import { FireSQL } from 'firesql';
-// import 'firesql/rx';
 import {
-  firestore,
   getFirestore,
   collection,
   doc,
@@ -14,21 +10,28 @@ import {
   deleteDoc,
 } from 'firebase/firestore';
 
-const db = getFirestore(firestore);
-// const docRef = firebase.firestore().doc('members_tasks');
+// Inicialize o Firestore
+const db = getFirestore(firebase);
 
-const fireSQL = new FireSQL(db);
 export const getGroupByMember = async (req, res, next) => {
   try {
-    res.status(200).send('ok');
-    // const members = await getDocs(collection(db, 'member_task'));
-    // const members = this.fireSQL.query('SELECT 
-    //     member,
-    //     task
-    //   FROM 
-    //     members_tasks
-    //   GROUP BY
-    //     member');
+    // Buscar todos os membros
+    const membersSnapshot = await getDocs(collection(db, 'members'));
+    const members = membersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+    // Buscar todas as tarefas
+    const tasksSnapshot = await getDocs(collection(db, 'tasks'));
+    const tasks = tasksSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+    // Agrupar tarefas por membro
+    const groupedData = members.map(member => {
+      return {
+        member: member,
+        tasks: tasks.filter(task => task.memberId === member.id)
+      };
+    });
+
+    res.status(200).send(groupedData);
   } catch (error) {
     res.status(400).send(error.message);
   }
