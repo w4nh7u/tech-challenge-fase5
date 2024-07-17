@@ -8,7 +8,7 @@
 
 Coded by www.creative-tim.com
 
- =========================================================
+=========================================================
 
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
@@ -73,14 +73,19 @@ await getMembers()
 
 let memberTask = []
 let rows = []
-let index = 0
 async function getMemberTask() {
-  memberTask = await ApiMembersTask.get()
+  memberTask = await ApiMembersTask.get();
   memberTask.data.forEach(item => {
-    item.tasks.forEach(task => {
-      rows.push({id: index++, member: item.member.name, task: task.description})
+    item.member = members.find((member) => {
+      return member.id == item.member;
     });
-  });
+
+    item.task = tasks.find((task) => {
+      return task.id == item.task;
+    });
+
+    rows.push(item);
+  })
 }
 await getMemberTask()
 
@@ -105,8 +110,8 @@ function Row(props) {
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </TableCell>
-        <TableCell align="left">{row.task}</TableCell>
-        <TableCell align="left">{row.member}</TableCell>
+        <TableCell align="left">{row.task.description}</TableCell>
+        <TableCell align="left">{row.member.name}</TableCell>
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
@@ -119,13 +124,14 @@ function Row(props) {
                 <TableBody>
                   <TableRow>
                     <TableCell align="left"></TableCell>
-                    <TableCell align="left">{row.task}</TableCell>
+                    <TableCell align="left">{row.task.description}</TableCell>
                     <TableCell component="th" scope="row" sx={{'& .MuiTextField-root': { m: 1, width: '25ch' },}}>
                       <MDInput
                         select
                         variant="standard"
                         label="Membro"
                         required
+                        defaultValue={row.member.id}
                         onChange={(e) => {
                           insert.member = e.target.value;
                         }}
@@ -142,12 +148,11 @@ function Row(props) {
                         variant="gradient" 
                         color="success"
                         onClick={() => {
-                          row.member = row.member;
-                          ApiMembersTask.update(row.id, {member: row.member})
+                          ApiMembersTask.update(row.id, {member: insert.member})
                             .then(response => {
                               if (response.hasOwnProperty('data')) {
                                 alert('Atribuição atualizada com sucesso!')
-                                setRefreshData(!refreshData)
+                                setRefreshData(refreshData ? false : true)
                               } 
                               else {
                                 alert('Ops! Tivemos algum problema, tente novamente!')
@@ -247,7 +252,7 @@ function Tables() {
                         label="Membro"
                         required
                         onChange={(e) => {
-                          insert.name = e.target.value;
+                          insert.member = e.target.value;
                         }}
                       >
                         {members.map((member) => (

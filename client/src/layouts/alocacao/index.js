@@ -60,18 +60,18 @@ let index = 0
 async function getMemberTask() {
   memberTask = await ApiMembersTask.get()
 
-  memberTask.data.forEach(item => {
-    const memberName = item.member.name;
-    let totalEtc = 0;
+  // memberTask.data.forEach(item => {
+  //   const memberName = item.member.name;
+  //   let totalEtc = 0;
 
-    // Calcular o total de 'etc' para as tarefas do membro
-    item.tasks.forEach(task => {
-      totalEtc += Number(task.etc);
-    });
+  //   // Calcular o total de 'etc' para as tarefas do membro
+  //   item.tasks.forEach(task => {
+  //     totalEtc += Number(task.etc);
+  //   });
 
-    // Adicionar ao resultado no formato desejado
-    rows.push({id: index++, member: memberName, etc: totalEtc });
-  });
+  //   // Adicionar ao resultado no formato desejado
+  //   rows.push({id: index++, member: memberName, etc: totalEtc });
+  // });
 }
 await getMemberTask()
 function Row(props) {
