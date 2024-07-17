@@ -85,11 +85,8 @@ function Row(props) {
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </TableCell>
-        <TableCell component="th" scope="row">
-          {row.id}
-        </TableCell>
-        <TableCell align="right">{row.id}</TableCell>
-        <TableCell align="right">{row.task}</TableCell>
+        <TableCell component="th" scope="row">{row.id}</TableCell>
+        <TableCell align="right">{row.description}</TableCell>
         <TableCell align="right">{row.deadline}</TableCell>
         <TableCell align="right">{row.priority}</TableCell>
         <TableCell align="right">{row.etc}</TableCell>
@@ -111,11 +108,11 @@ function Row(props) {
                       <TextField 
                         label="Descrição da Tarefa" 
                         variant="standard" 
-                        defaultValue={row.task}
+                        defaultValue={row.description}
                         type="text"
                         required
                         onChange={(e) => {
-                          row.task = e.target.value;
+                          row.description = e.target.value;
                         }}
                       />
                     </TableCell>
@@ -165,11 +162,11 @@ function Row(props) {
                         variant="gradient" 
                         color="success"
                         onClick={() => {
-                          row.task = row.task;
-                          row.deadline = row.email;
+                          row.description = row.description;
+                          row.deadline = row.deadline;
                           row.priority = row.priority;
                           row.etc = row.etc;
-                          ApiTasks.update(row.id, {task: row.task, deadline: row.deadline, priority: row.priority, etc: row.etc})
+                          ApiTasks.update(row.id, {description: row.description, deadline: row.deadline, priority: row.priority, etc: row.etc})
                             .then(response => {
                               if (response.hasOwnProperty('data')) {
                                 alert('Tarefa atualizado com sucesso!')
@@ -199,7 +196,7 @@ function Row(props) {
 }
 
 let insert = {
-  task: '',
+  description: '',
   deadline: '',
   priority: '',
   etc: '',
@@ -254,7 +251,7 @@ function Tables() {
                         required
                         variant="standard"
                         onChange={(e) => {
-                          insert.task = e.target.value;
+                          insert.description = e.target.value;
                         }}
                       />
 
