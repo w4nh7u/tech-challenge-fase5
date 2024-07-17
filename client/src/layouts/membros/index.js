@@ -143,6 +143,33 @@ function Row(props) {
                         <MenuItem value="sr">Desenvolvedor Sr</MenuItem>
                       </MDInput>
                     </TableCell>
+
+                    <TableCell>
+                      <MDButton 
+                        variant="gradient" 
+                        color="success"
+                        onClick={() => {
+                          row.name = row.name;
+                          row.email = row.email;
+                          row.f = row.function;
+                          ApiMembers.update(row.id, {name: row.name, email: row.email, f: row.f})
+                            .then(response => {
+                              if (response.hasOwnProperty('data')) {
+                                alert('Membro atualizado com sucesso!')
+                                setRefreshData(!refreshData)
+                              } 
+                              else {
+                                alert('Ops! Tivemos algum problema, tente novamente!')
+                              }
+                            });
+                          setRefreshData(!refreshData)
+                        }}
+                      >
+                        <Icon sx={{ fontWeight: "bold" }}>send</Icon>
+                        &nbsp;&nbsp;salvar
+                      </MDButton>
+                    </TableCell>
+
                   </TableRow>
                 </TableBody>
               </Table>
@@ -207,6 +234,7 @@ function Tables() {
                       <MDInput
                         label="Nome"
                         variant="standard"
+                        required
                         onChange={(e) => {
                           insert.name = e.target.value;
                         }}
@@ -215,6 +243,7 @@ function Tables() {
                       <MDInput
                         label="Email"
                         variant="standard"
+                        required
                         onChange={(e) => {
                           insert.email = e.target.value;
                         }}
@@ -224,6 +253,7 @@ function Tables() {
                         select
                         label="Função"
                         variant="standard"
+                        required
                         onChange={(e) => {
                           insert.function = e.target.value;
                         }}

@@ -55,6 +55,26 @@ import Footer from "examples/Footer";
 import ApiReservations from "api/reservations";
 import ApiPlaces from "api/places";
 
+import ApiTasks from "api/tasks";
+import ApiMembers from "api/members";
+let tasks = []
+async function getTasks() {
+  const response = await ApiTasks.get()
+  tasks = response.data
+  console.log('tasks', tasks)
+}
+await getTasks()
+
+let members = []
+async function getMembers() {
+  const response = await ApiMembers.get()
+  members = response.data
+  console.log('members', members)
+}
+await getMembers()
+
+
+
 let places = []
 async function getPlaces() {
   places = await ApiPlaces.get()
@@ -94,18 +114,16 @@ function Row(props) {
         <TableCell component="th" scope="row">
           {row.id}
         </TableCell>
-        <TableCell align="right">{row.place}</TableCell>
-        <TableCell align="right">{row.date}</TableCell>
-        <TableCell align="right">{row.start}</TableCell>
+        <TableCell align="right">{row.task}</TableCell>
+        <TableCell align="right">{row.name}</TableCell>
       </TableRow>
     </React.Fragment>
   );
 }
 
 let insert = {
+  task: '',
   name: '',
-  email: '',
-  function: '',
 }
 
 function Tables() {
@@ -156,26 +174,33 @@ function Tables() {
                         select
                         variant="standard"
                         label="Tarefa"
+                        required
                         onChange={(e) => {
                           insert.task = e.target.value;
                         }}
                       >
-                        <MenuItem value="1">1</MenuItem>
-                        <MenuItem value="2">2</MenuItem>
-                        <MenuItem value="3">3</MenuItem>
+                        {tasks.map((task) => (
+                          <MenuItem key={task.id} value={task.id}>
+                            {task.description}
+                          </MenuItem>
+                        ))}
                       </MDInput>
+
 
                       <MDInput
                         select
                         variant="standard"
                         label="Membro"
+                        required
                         onChange={(e) => {
                           insert.name = e.target.value;
                         }}
                       >
-                        <MenuItem value="1">1</MenuItem>
-                        <MenuItem value="2">2</MenuItem>
-                        <MenuItem value="3">3</MenuItem>
+                        {members.map((member) => (
+                          <MenuItem key={member.id} value={member.id}>
+                            {member.name}
+                          </MenuItem>
+                        ))}
                       </MDInput>
 
                       <Box

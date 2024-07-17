@@ -85,12 +85,11 @@ function Row(props) {
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </TableCell>
-        <TableCell component="th" scope="row">
-          {row.id}
-        </TableCell>
-        <TableCell align="right">{row.id}</TableCell>
+        <TableCell component="th" scope="row">{row.id}</TableCell>
+        <TableCell align="right">{row.description}</TableCell>
         <TableCell align="right">{row.deadline}</TableCell>
         <TableCell align="right">{row.priority}</TableCell>
+        <TableCell align="right">{row.etc}</TableCell>
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
@@ -101,18 +100,19 @@ function Row(props) {
               </Typography>
               <Table size="small" aria-label="purchases">
                 <TableBody>
-                  <TableRow 
-                    key={row.id}
-                  >
+                  <TableRow>
+                    <TableCell component="th" scope="row">
+                      {row.id}
+                    </TableCell>
                     <TableCell component="th" scope="row">
                       <TextField 
                         label="Descrição da Tarefa" 
                         variant="standard" 
-                        defaultValue={row.name}
+                        defaultValue={row.description}
                         type="text"
                         required
                         onChange={(e) => {
-                          row.task = e.target.value;
+                          row.description = e.target.value;
                         }}
                       />
                     </TableCell>
@@ -121,7 +121,7 @@ function Row(props) {
                         label="Prazo" 
                         variant="standard"
                         type="date"
-                        defaultValue={row.email}
+                        defaultValue={row.deadline}
                         required
                         onChange={(e) => {
                           row.deadline = e.target.value;
@@ -156,6 +156,33 @@ function Row(props) {
                         }}
                       />
                     </TableCell>
+
+                    <TableCell>
+                      <MDButton 
+                        variant="gradient" 
+                        color="success"
+                        onClick={() => {
+                          row.description = row.description;
+                          row.deadline = row.deadline;
+                          row.priority = row.priority;
+                          row.etc = row.etc;
+                          ApiTasks.update(row.id, {description: row.description, deadline: row.deadline, priority: row.priority, etc: row.etc})
+                            .then(response => {
+                              if (response.hasOwnProperty('data')) {
+                                alert('Tarefa atualizado com sucesso!')
+                                setRefreshData(!refreshData)
+                              } 
+                              else {
+                                alert('Ops! Tivemos algum problema, tente novamente!')
+                              }
+                            });
+                          setRefreshData(!refreshData)
+                        }}
+                      >
+                        <Icon sx={{ fontWeight: "bold" }}>send</Icon>
+                        &nbsp;&nbsp;salvar
+                      </MDButton>
+                    </TableCell>
                     
                   </TableRow>
                 </TableBody>
@@ -169,9 +196,10 @@ function Row(props) {
 }
 
 let insert = {
-  name: '',
-  email: '',
-  function: '',
+  description: '',
+  deadline: '',
+  priority: '',
+  etc: '',
 }
 
 function Tables() {
@@ -220,15 +248,17 @@ function Tables() {
                     >
                       <MDInput
                         label="Descrição da Tarefa"
+                        required
                         variant="standard"
                         onChange={(e) => {
-                          insert.task = e.target.value;
+                          insert.description = e.target.value;
                         }}
                       />
 
                       <MDInput
                         type="date" 
                         label="Prazo"
+                        required
                         variant="standard"
                         min="1"
                         onChange={(e) => {
@@ -240,6 +270,7 @@ function Tables() {
                         select
                         variant="standard"
                         label="Prioridade"
+                        required
                         onChange={(e) => {
                           insert.priority = e.target.value;
                         }}
@@ -254,6 +285,7 @@ function Tables() {
                         type="number"
                         min="1"
                         variant="standard"
+                        required
                         onChange={(e) => {
                           insert.etc = e.target.value;
                         }}
@@ -267,10 +299,10 @@ function Tables() {
                           variant="gradient" 
                           color="success"
                           onClick={() => {
-                            ApiPlaces.insert(insert)
+                            ApiTasks.insert(insert)
                               .then(response => {
                                 if (response.hasOwnProperty('data')) {
-                                  alert('Novo local cadastrado com sucesso!')
+                                  alert('Nova tarefa cadastrado com sucesso!')
                                   getData()
                                 } 
                                 else {

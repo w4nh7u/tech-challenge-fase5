@@ -36,7 +36,8 @@ export const getTasks = async (req, res, next) => {
           doc.id,
           doc.data().description,
           doc.data().deadline,
-          doc.data().priority
+          doc.data().priority,
+          doc.data().etc
         );
         taskArray.push(task);
       });
