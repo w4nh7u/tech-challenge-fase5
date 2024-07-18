@@ -68,18 +68,14 @@ Tecnologias e Ferramentas Utilizadas
 
 - Docker: Plataforma de containers utilizada para criar, implantar e executar aplicações de forma isolada e consistente, garantindo que funcionem da mesma maneira em diferentes ambientes.
 
+- Dotenv: Utilizado para criar variaveis de ambiente.
 
 
 
 Desafios Encontrados e Soluções Implementadas
 
-Implementar uma lógica robusta para verificação de sobreposição de horários.
-Solução: Utilizamos a conversão de horários para minutos desde a meia-noite, o que facilitou a comparação dos intervalos de tempo.
+Integração com firebase.
+Solução: Versão do node.
 
-Garantir que a interface do usuário seja intuitiva e fácil de usar.
-Solução: Implementamos inputs de tipo "time" no HTML para facilitar a inserção de horários pelos usuários.
-
-Validar os inputs de horário e fornecer feedback adequado ao usuário.
-Solução: Adicionamos verificações para garantir que ambos os horários fossem fornecidos e retornamos mensagens apropriadas dependendo se a sobreposição foi detectada ou não.
-
-
+Falta de documentação do Firebase para utilizar as versões corretas do Node.js.
+Solução: Atualizar a versão do node da versao 12 para 17.3.
