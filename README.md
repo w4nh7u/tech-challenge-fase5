@@ -76,3 +76,7 @@ Tecnologias e Ferramentas Utilizadas
 - Docker: Plataforma de containers utilizada para criar, implantar e executar aplicações de forma isolada e consistente, garantindo que funcionem da mesma maneira em diferentes ambientes.
 
 - Dotenv: Utilizado para criar variaveis de ambiente.
+
+
+Doc do Google Drive
+https://docs.google.com/document/d/1rB6RWKtW5f_CUVXYrUxCoqKr34241RxAVmJUJig_r34/edit?usp=sharing
