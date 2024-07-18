@@ -51,15 +51,56 @@ import MDInput from "components/MDInput";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
+
+import ApiTasks from "api/tasks";
+import ApiMembers from "api/members";
 import ApiMembersTask from "api/membersTask";
 
+let tasks = []
+async function getTasks() {
+  const response = await ApiTasks.get()
+  tasks = response.data
+}
+await getTasks()
+
+let members = []
+async function getMembers() {
+  const response = await ApiMembers.get()
+  members = response.data
+}
+await getMembers()
 
 let memberTask = []
 let rows = []
-let index = 0
+let tasksByMember = []
+let allocation = []
 async function getMemberTask() {
   memberTask = await ApiMembersTask.get()
+  memberTask.data.forEach(item => {
+    item.member = members.find((member) => {
+      return member.id == item.member;
+    });
 
+    item.task = tasks.find((task) => {
+      return task.id == item.task;
+    });
+
+    if (!tasksByMember[item.member.id]) {
+      tasksByMember[item.member.id] = {
+        member: item.member,
+        allocation: 0,
+        tasks: [],
+      }  
+    }
+    tasksByMember[item.member.id].allocation = parseInt(tasksByMember[item.member.id].allocation) + parseInt(item.task.etc)
+    tasksByMember[item.member.id].tasks.push(item.task)
+  })
+
+  rows = Object.entries(tasksByMember).map((item) => {
+    return item[1];
+  })
+
+  // console.log(rows);
   // memberTask.data.forEach(item => {
   //   const memberName = item.member.name;
   //   let totalEtc = 0;
@@ -73,7 +114,8 @@ async function getMemberTask() {
   //   rows.push({id: index++, member: memberName, etc: totalEtc });
   // });
 }
-await getMemberTask()
+await getMemberTask();
+
 function Row(props) {
   const { row } = props;
   const [open, setOpen] = useState(false)
@@ -86,8 +128,8 @@ function Row(props) {
   return (
     <React.Fragment>
       <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
-        <TableCell align="right">{row.member}</TableCell>
-        <TableCell align="right">{row.etc}</TableCell>
+        <TableCell align="right">{row.member.name}</TableCell>
+        <TableCell align="right">{row.allocation}</TableCell>
       </TableRow>
 
     </React.Fragment>
@@ -115,7 +157,7 @@ function Tables() {
                     </TableHead>
                     <TableBody>
                       {rows.map((row) => (
-                        <Row key={row.id} row={row} />
+                        <Row key={row} row={row} />
                       ))}
                     </TableBody>
                   </Table>
