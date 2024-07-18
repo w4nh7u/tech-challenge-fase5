@@ -32,6 +32,13 @@ import CoverLayout from "layouts/authentication/components/CoverLayout";
 // Images
 import bgImage from "assets/images/bg-sign-up-cover.jpeg";
 
+import ApiAuth from "api/auth";
+
+let insert = {
+  email: '',
+  password: '',
+}
+
 function Cover() {
   return (
     <CoverLayout image={bgImage}>
@@ -48,52 +55,65 @@ function Cover() {
           textAlign="center"
         >
           <MDTypography variant="h4" fontWeight="medium" color="white" mt={1}>
-            Join us today
+            Crie o seu cadastro
           </MDTypography>
           <MDTypography display="block" variant="button" color="white" my={1}>
-            Utilize un nome, o email e senha para se cadastrar
+            Utilize um email e senha para se cadastrar
           </MDTypography>
         </MDBox>
         <MDBox pt={4} pb={3} px={3}>
           <MDBox component="form" role="form">
             <MDBox mb={2}>
-              <MDInput type="text" label="Name" variant="standard" fullWidth />
+              <MDInput 
+                type="email" 
+                label="Email" 
+                variant="standard" 
+                fullWidth 
+                required
+                onChange={(e) => {
+                  insert.email = e.target.value;
+                }}
+              />
             </MDBox>
             <MDBox mb={2}>
-              <MDInput type="email" label="Email" variant="standard" fullWidth />
+              <MDInput 
+                type="password" 
+                label="Password" 
+                variant="standard" 
+                fullWidth 
+                required
+                onChange={(e) => {
+                  insert.password = e.target.value;
+                }}
+              />
             </MDBox>
-            <MDBox mb={2}>
-              <MDInput type="password" label="Password" variant="standard" fullWidth />
-            </MDBox>
-            {/* <MDBox display="flex" alignItems="center" ml={-1}>
-              <Checkbox />
-              <MDTypography
-                variant="button"
-                fontWeight="regular"
-                color="text"
-                sx={{ cursor: "pointer", userSelect: "none", ml: -1 }}
-              >
-                &nbsp;&nbsp;Eu aceito os&nbsp;
-              </MDTypography>
-              <MDTypography
-                component="a"
-                href="#"
-                variant="button"
-                fontWeight="bold"
-                color="info"
-                textGradient
-              >
-                Termos e condições
-              </MDTypography>
-            </MDBox> */}
             <MDBox mt={4} mb={1}>
-              <MDButton variant="gradient" color="info" fullWidth>
+              <MDButton 
+                variant="gradient" 
+                color="info" 
+                fullWidth
+                onClick={() => {
+                  ApiAuth.insert(insert)
+                    .then(response => {
+                      if (response.hasOwnProperty('data')) {
+                        localStorage.setItem('user', JSON.stringify(response.data));
+                        alert('Login criado com sucesso!');
+                        window.location.href = "/membros"
+                      } 
+                      else {
+                        alert('Ops! Tivemos algum problema, tente novamente!')
+                      }
+                    }).catch(function (error) {
+                      alert(error)
+                    });
+                }}
+              >
                 sign in
               </MDButton>
             </MDBox>
             <MDBox mt={3} mb={1} textAlign="center">
               <MDTypography variant="button" color="text">
-                Already have an account?{" "}
+                Já tem uma conta?{" "}
                 <MDTypography
                   component={Link}
                   to="/authentication/sign-in"

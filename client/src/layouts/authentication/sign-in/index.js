@@ -41,6 +41,13 @@ import BasicLayout from "layouts/authentication/components/BasicLayout";
 // Images
 import bgImage from "assets/images/bg-sign-in-basic.jpeg";
 
+import ApiAuth from "api/auth";
+
+let login = {
+  email: '',
+  password: '',
+}
+
 function Basic() {
   const [rememberMe, setRememberMe] = useState(false);
 
@@ -67,25 +74,47 @@ function Basic() {
         <MDBox pt={4} pb={3} px={3}>
           <MDBox component="form" role="form">
             <MDBox mb={2}>
-              <MDInput type="email" label="Email" fullWidth />
+              <MDInput 
+                type="email" 
+                label="Email" 
+                fullWidth 
+                required
+                onChange={(e) => {
+                  login.email = e.target.value;
+                }}
+              />
             </MDBox>
             <MDBox mb={2}>
-              <MDInput type="password" label="Password" fullWidth />
-            </MDBox>
-            <MDBox display="flex" alignItems="center" ml={-1}>
-              <Switch checked={rememberMe} onChange={handleSetRememberMe} />
-              <MDTypography
-                variant="button"
-                fontWeight="regular"
-                color="text"
-                onClick={handleSetRememberMe}
-                sx={{ cursor: "pointer", userSelect: "none", ml: -1 }}
-              >
-                &nbsp;&nbsp;Remember me
-              </MDTypography>
+              <MDInput 
+                type="password" 
+                label="Password" 
+                fullWidth 
+                required
+                onChange={(e) => {
+                  login.password = e.target.value;
+                }}
+              />
             </MDBox>
             <MDBox mt={4} mb={1}>
-              <MDButton variant="gradient" color="info" fullWidth>
+              <MDButton 
+                variant="gradient" 
+                color="info" 
+                fullWidth
+                onClick={() => {
+                  ApiAuth.login(login)
+                    .then(response => {
+                      if (response.hasOwnProperty('data')) {
+                        localStorage.setItem('user', JSON.stringify(response.data));
+                        window.location.href = "/membros"
+                      } 
+                      else {
+                        alert('Ops! Tivemos algum problema, tente novamente!')
+                      }
+                    }).catch(function (error) {
+                      alert(error)
+                    });
+                }}
+              >
                 sign in
               </MDButton>
             </MDBox>

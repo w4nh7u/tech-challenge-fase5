@@ -40,10 +40,36 @@ import Atribuicao from "layouts/atribuicao";
 import Membros from "layouts/membros";
 import Tarefas from "layouts/tarefas";
 import Alocacao from "layouts/alocacao";
+import SignIn from "layouts/authentication/sign-in";
+import SignUp from "layouts/authentication/sign-up";
 // @mui icons
 import Icon from "@mui/material/Icon";
 
 const routes = [
+  // {
+  //   type: "collapse",
+  //   name: "Sair",
+  //   key: "logout",
+  //   icon: <Icon fontSize="small">logout</Icon>,
+  //   route: "/authentication/logout",
+  //   component: <Logout />,
+  // },
+  {
+    type: "collapse",
+    name: "Sign In",
+    key: "sign-in",
+    icon: <Icon fontSize="small">login</Icon>,
+    route: "/authentication/sign-in",
+    component: <SignIn />,
+  },
+  {
+    type: "collapse",
+    name: "Sign Up",
+    key: "sign-up",
+    icon: <Icon fontSize="small">assignment</Icon>,
+    route: "/authentication/sign-up",
+    component: <SignUp />,
+  },
   {
     type: "collapse",
     name: "Cadastro de Membros",

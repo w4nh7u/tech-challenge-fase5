@@ -83,10 +83,22 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
     return () => window.removeEventListener("resize", handleMiniSidenav);
   }, [dispatch, location]);
 
+  if (
+    !localStorage.getItem('user')
+    && window.location.pathname.indexOf('authentication') <= 0
+  ) {
+    window.location.href = '/authentication/sign-in'
+  }
   // Render all the routes from the routes.js (All the visible items on the Sidenav)
   const renderRoutes = routes.map(({ type, name, icon, title, noCollapse, key, href, route }) => {
+    if (
+      key == 'sign-in'
+      || key == 'sign-up'
+    ) {
+      return 
+    }
     let returnValue;
-
+    
     if (type === "collapse") {
       returnValue = href ? (
         <Link
@@ -178,7 +190,18 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
           (darkMode && !transparentSidenav && whiteSidenav)
         }
       />
-      <List>{renderRoutes}</List>
+      <List>
+        <NavLink 
+          key='logout'
+          onClick={() => {
+            localStorage.removeItem('user')
+            window.location.href = '/authentication/sign-in'
+          }}
+        >
+          <SidenavCollapse name='Sair' icon='logout'/>
+        </NavLink>
+        {renderRoutes}
+      </List>
     </SidenavRoot>
   );
 }
