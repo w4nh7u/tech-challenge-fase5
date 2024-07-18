@@ -12,6 +12,13 @@ Instruções
 - Acessar a pasta do projeto pelo terminal
 - Rodar o comando do Docker >  docker-compose up
 - Acessar a http://localhost:89
+- Criar um login e uma senha
+
+- Login para teste <br/>
+email: edu@teste.com <br/>
+senha: 123456 <br/>
+
+- Acessar o projeto
 
 Link github
 https://github.com/w4nh7u/tech-challenge-fase5
