@@ -21,29 +21,29 @@ https://github.com/w4nh7u/tech-challenge-fase5
 Documentação das APIs
 Endpoints para gerenciamento dos Locais
 
--- Auth
-[POST] http://localhost:3000/api/auth/new
-[POST] http://localhost:3000/api/auth/login
-[GET] http://localhost:3000/api/auth/logout
+-- Auth <br/>
+[POST] http://localhost:3000/api/auth/new <br/>
+[POST] http://localhost:3000/api/auth/login <br/>
+[GET] http://localhost:3000/api/auth/logout <br/>
  
--- Membros
-[GET] http://localhost:3000/api/members
-[POST] http://localhost:3000/api/members/new
-[GET] http://localhost:3000/api/members/member/:id
-[PUT] http://localhost:3000/api/members/update/:id
-[DELETE] http://localhost:3000/api/members/delete/:id
+-- Membros <br/>
+[GET] http://localhost:3000/api/members <br/>
+[POST] http://localhost:3000/api/members/new <br/>
+[GET] http://localhost:3000/api/members/member/:id <br/>
+[PUT] http://localhost:3000/api/members/update/:id <br/>
+[DELETE] http://localhost:3000/api/members/delete/:id <br/>
  
--- Tasks para membros
-[GET] http://localhost:3000/api/member-task
-http://localhost:3000/api/member-task/new
-[PUT]http://localhost:3000/api/member-task/update/:id
+-- Tasks para membros <br/>
+[GET] http://localhost:3000/api/member-task <br/>
+http://localhost:3000/api/member-task/new <br/>
+[PUT]http://localhost:3000/api/member-task/update/:id <br/>
  
--- Tasks
-[GET] http://localhost:3000/api/tasks
-[POST] http://localhost:3000/api/tasks/new
-[GET] http://localhost:3000/api/tasks/task/:id
-[PUT] http://localhost:3000/api/tasks/update/:id
-[DELETE] http://localhost:3000/api/tasks/delete/:id
+-- Tasks <br/>
+[GET] http://localhost:3000/api/tasks <br/>
+[POST] http://localhost:3000/api/tasks/new <br/>
+[GET] http://localhost:3000/api/tasks/task/:id <br/>
+[PUT] http://localhost:3000/api/tasks/update/:id <br/>
+[DELETE] http://localhost:3000/api/tasks/delete/:id <br/>
 
 
 Tecnologias e Ferramentas Utilizadas
@@ -69,13 +69,3 @@ Tecnologias e Ferramentas Utilizadas
 - Docker: Plataforma de containers utilizada para criar, implantar e executar aplicações de forma isolada e consistente, garantindo que funcionem da mesma maneira em diferentes ambientes.
 
 - Dotenv: Utilizado para criar variaveis de ambiente.
-
-
-
-Desafios Encontrados e Soluções Implementadas
-
-Integração com firebase.
-Solução: Versão do node.
-
-Falta de documentação do Firebase para utilizar as versões corretas do Node.js.
-Solução: Atualizar a versão do node da versao 12 para 17.3.
